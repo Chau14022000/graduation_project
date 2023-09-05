@@ -1,0 +1,49 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../domain/entities/edit_profile/form_field/username.dart';
+import '../../../resources/app_colors.dart';
+import '../../../resources/app_text_styles.dart';
+import '../../../resources/app_texts.dart';
+import '../../../widget/text_field_widget.dart';
+import '../bloc/edit_profile_presenter.dart';
+import '../bloc/edit_profile_state.dart';
+
+class UsernameFormField extends StatelessWidget {
+  const UsernameFormField({
+    required this.editProfilePresenter,
+    Key? key,
+  }) : super(key: key);
+
+  final EditProfilePresenter editProfilePresenter;
+
+  @override
+  Widget build(BuildContext context) =>
+      BlocBuilder<EditProfilePresenter, EditProfileState>(
+        bloc: editProfilePresenter,
+        buildWhen: (previous, current) => previous.username != current.username,
+        builder: (context, state) => TextFieldWidget(
+          top: 0,
+          left: 0,
+          right: 0,
+          hintText: AppTexts.enterName,
+          labelText: AppTexts.name,
+          keyboardType: TextInputType.name,
+          style: AppTextStyles.size13BlackBold,
+          textStyle: AppTextStyles.size15Grey,
+          errorStyle: const TextStyle(
+            color: Colors.red,
+          ),
+          errorText: state.username.error?.description,
+          fillColor: Colors.transparent,
+          styleBorder: const UnderlineInputBorder(
+            borderSide: BorderSide(
+              color: AppColors.greyLight,
+            ),
+          ),
+          controller: editProfilePresenter.usernameEditingController,
+          onChanged: (username) =>
+              editProfilePresenter.usernameChanged(username),
+        ),
+      );
+}
